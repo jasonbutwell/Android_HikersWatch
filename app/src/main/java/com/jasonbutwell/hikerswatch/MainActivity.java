@@ -116,6 +116,5 @@ public class MainActivity extends Activity implements LocationListener {
     @Override
     public void onProviderDisabled(String provider) {
         Log.i("Location","Provider is disabled!");
-
     }
 }
