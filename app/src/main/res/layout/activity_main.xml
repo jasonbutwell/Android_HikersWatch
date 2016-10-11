@@ -16,11 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:srcCompat="@drawable/background"
-        android:id="@+id/imageView2"
         android:background="@drawable/background"
         android:scaleType="fitXY"
         android:contentDescription=""
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        android:adjustViewBounds="false"
+        android:alpha="0.5"
+        android:id="@+id/imageView" />
 
     <TextView
         android:text="Hiker's Watch"
@@ -32,7 +34,8 @@
         android:id="@+id/titleView"
         android:textSize="24sp"
         android:textStyle="normal|bold"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Latitude"
@@ -43,7 +46,8 @@
         android:layout_marginTop="15dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/latView" />
+        android:id="@+id/latView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Longitude"
@@ -54,7 +58,8 @@
         android:layout_marginTop="15dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/lngView" />
+        android:id="@+id/lngView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Altitude"
@@ -65,7 +70,8 @@
         android:layout_marginTop="25dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/altView" />
+        android:id="@+id/altView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Accuracy"
@@ -76,7 +82,8 @@
         android:layout_marginTop="15dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/accuracyView" />
+        android:id="@+id/accuracyView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Speed"
@@ -87,7 +94,8 @@
         android:layout_marginTop="25dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/speedView" />
+        android:id="@+id/speedView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Bearing"
@@ -98,7 +106,8 @@
         android:layout_marginTop="10dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/bearingView" />
+        android:id="@+id/bearingView"
+        android:textAlignment="center" />
 
     <TextView
         android:text="Address"
@@ -109,5 +118,6 @@
         android:layout_marginTop="25dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
-        android:id="@+id/addressView" />
+        android:id="@+id/addressView"
+        android:textAlignment="center" />
 </RelativeLayout>

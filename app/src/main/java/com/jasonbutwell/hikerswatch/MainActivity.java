@@ -15,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,20 +39,49 @@ public class MainActivity extends Activity implements LocationListener {
 
     private List<Address> listAddresses;
 
+    private boolean locationFound;
+
     // Get the location info
     private void getLocationInfo(Location location) {
 
         // grab all the info we want from the location
         lat = location.getLatitude();
         lon = location.getLongitude();
+
         alt = location.getAltitude();
-        bearing = location.getBearing();
-        speed = location.getSpeed();
         accuracy = location.getAccuracy();
+
+        speed = location.getSpeed();
+        bearing = location.getBearing();
+    }
+
+    private void setViewText( int id, String text ) {
+        TextView tv = (TextView) findViewById( id );
+
+        if ( tv != null )
+            tv.setText( text );
+    }
+
+    // update the UI to reflect the data we have obtained from the location and the address data
+    private void updateTextViews() {
+
+        int ids[] = { R.id.latView, R.id.lngView, R.id.altView, R.id.accuracyView, R.id.speedView, R.id.bearingView, R.id.addressView };
+        String labels[] = { "Latitude: ", "Longitude: ", "Altitude: ", "Accuracy: ", "Speed: ", "Bearing: ", "Address: \r\n\r\n" };
+
+        setViewText(ids[0], labels[0] + lat.toString());
+        setViewText(ids[1], labels[1] + lon.toString());
+
+        setViewText(ids[2], labels[2] + alt.toString());
+        setViewText(ids[3], labels[3] + accuracy.toString()+ "m");
+
+        setViewText(ids[4], labels[4] + speed.toString());
+        setViewText(ids[5], labels[5] + bearing.toString());
+
+        setViewText(ids[6], labels[6] + streetAddress.toString());
     }
 
     // obtain our street address from our (lat, lng) location
-    public void getAddress( Geocoder geocoder ) {
+    private void getAddress( Geocoder geocoder ) {
 
         try {
             // List of Addresses. We store the addresses we find at that lat long location in this list.
@@ -61,8 +91,16 @@ public class MainActivity extends Activity implements LocationListener {
             // Ensure we actually do have some locations in our list to display
             if ( listAddresses != null && listAddresses.size() > 0 ) {
                 // store the street address
-                streetAddress = listAddresses.get(0).toString();
-                Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                //Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                // clear the address string for when the location changes
+                streetAddress = "";
+
+                // obtain the fields of the address and concatenate together into one string
+                for (int i = 0; i < listAddresses.get(0).getMaxAddressLineIndex(); i++ ) {
+                    streetAddress += listAddresses.get(0).getAddressLine(i)+"\r\n";
+                }
             }
 
         } catch (IOException e) {
@@ -91,6 +129,11 @@ public class MainActivity extends Activity implements LocationListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        locationFound = false;
+
+//        ImageView iv = (ImageView) findViewById(R.id.imageView);
+//        iv.setAlpha(0.25f);
+
         setContentView(R.layout.activity_main);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -112,12 +155,15 @@ public class MainActivity extends Activity implements LocationListener {
         }
 
         if (location != null) {
-            Log.i( "Location", "Location Achieved" );
+            locationFound = true;
+            //Log.i( "Location", "Location Achieved" );
 
             // call to onLocationChanged in first instance of execution from onCreate() method.
-            onLocationChanged(location);
+            if ( locationFound )
+                onLocationChanged(location);
         } else {
-            Log.i( "Location", "No Location" );
+            locationFound = false;
+            //Log.i( "Location", "No Location" );
         }
     }
 
@@ -165,17 +211,22 @@ public class MainActivity extends Activity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        // Store the location info we want
-        getLocationInfo(location);
+        // Only update if we got the last known location
 
-        // We need a geocoder to resolve the lat / long to a street address
-        geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            // Store the location info we want
+            getLocationInfo(location);
 
-        // obtain the address and store it
-        getAddress( geocoder );
+            // We need a geocoder to resolve the lat / long to a street address
+            geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-        // log the info to the logCat
-        logInfo();
+            // obtain the address and store it
+            getAddress(geocoder);
+
+            // update the UI textview elements
+            updateTextViews();
+
+            // log the info to the logCat
+            //logInfo();
     }
 
     @Override
