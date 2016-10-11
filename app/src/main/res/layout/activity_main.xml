@@ -99,4 +99,15 @@
         android:textSize="20sp"
         android:textColor="@android:color/black"
         android:id="@+id/bearingView" />
+
+    <TextView
+        android:text="Address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bearingView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        android:id="@+id/addressView" />
 </RelativeLayout>

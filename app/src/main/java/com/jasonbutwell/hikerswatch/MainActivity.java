@@ -32,6 +32,57 @@ public class MainActivity extends Activity implements LocationListener {
     private Float speed;
     private Float accuracy;
 
+    private String streetAddress;
+
+    private Geocoder geocoder;
+
+    private List<Address> listAddresses;
+
+    // Get the location info
+    private void getLocationInfo(Location location) {
+
+        // grab all the info we want from the location
+        lat = location.getLatitude();
+        lon = location.getLongitude();
+        alt = location.getAltitude();
+        bearing = location.getBearing();
+        speed = location.getSpeed();
+        accuracy = location.getAccuracy();
+    }
+
+    // obtain our street address from our (lat, lng) location
+    public void getAddress( Geocoder geocoder ) {
+
+        try {
+            // List of Addresses. We store the addresses we find at that lat long location in this list.
+            // We only want 1 for now.
+            listAddresses = geocoder.getFromLocation(lat, lon, 1);
+
+            // Ensure we actually do have some locations in our list to display
+            if ( listAddresses != null && listAddresses.size() > 0 ) {
+                // store the street address
+                streetAddress = listAddresses.get(0).toString();
+                Log.i("PlaceInfo", listAddresses.get(0).toString());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Send output to the log
+    private void logInfo() {
+        // Output the info we have obtained from the location to the console for now
+        Log.i("Location", "LAT/LON:"+lat.toString()+","+lon.toString());
+
+        Log.i("Latitude", String.valueOf(lat));
+        Log.i("Longitude", String.valueOf(lon));
+        Log.i("Altitude", String.valueOf(alt));
+        Log.i("Bearing", String.valueOf(bearing));
+        Log.i("Speed", String.valueOf(speed));
+        Log.i("Accuracy", String.valueOf(accuracy));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +119,6 @@ public class MainActivity extends Activity implements LocationListener {
         } else {
             Log.i( "Location", "No Location" );
         }
-
     }
 
     @Override
@@ -115,41 +165,17 @@ public class MainActivity extends Activity implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        // grab all the info we want from the location
-
-        Double lat = location.getLatitude();
-        Double lon = location.getLongitude();
-        Double alt = location.getAltitude();
-        Float bearing = location.getBearing();
-        Float speed = location.getSpeed();
-        Float accuracy = location.getAccuracy();
+        // Store the location info we want
+        getLocationInfo(location);
 
         // We need a geocoder to resolve the lat / long to a street address
+        geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+        // obtain the address and store it
+        getAddress( geocoder );
 
-        try {
-            // List of Addresses. We store the addresses we find at that lat long location in this list.
-            // We only want 1 for now.
-            List<Address> listAddresses = geocoder.getFromLocation(lat, lon, 1);
-
-            // Ensure we actually do have some locations in our list to display
-            if ( listAddresses != null && listAddresses.size() > 0 )
-                Log.i("PlaceInfo", listAddresses.get(0).toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        // Output the info we have obtained from the location to the console for now
-        Log.i("Location", "LAT/LON:"+lat.toString()+","+lon.toString());
-
-        Log.i("Latitude", String.valueOf(lat));
-        Log.i("Longitude", String.valueOf(lon));
-        Log.i("Altitude", String.valueOf(alt));
-        Log.i("Bearing", String.valueOf(bearing));
-        Log.i("Speed", String.valueOf(speed));
-        Log.i("Accuracy", String.valueOf(accuracy));
+        // log the info to the logCat
+        logInfo();
     }
 
     @Override
